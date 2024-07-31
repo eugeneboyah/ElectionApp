@@ -1,0 +1,14 @@
+const sqlite3 = require('sqlite3').verbose()
+const db = new sqlite3.Database('./election.db')
+
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS voter_reg_form (
+      party_name NOT NULL,
+      logo BLOB)`)
+
+          
+       db.each('SELECT * FROM auth', (err, row) => {
+            console.log(row)
+      })
+       
+    })
