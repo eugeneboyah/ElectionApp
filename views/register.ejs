@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voter Registration Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f4f4f4;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    h2 {
+      grid-column: span 2;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="date"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      grid-column: span 2;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #optionalFields {
+      grid-column: span 2;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      #optionalFields {
+        grid-column: span 1;
+      }
+
+      button {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <form action="/register" method="post" enctype="multipart/form-data">
+    <h2>Voter Registration Form</h2> 
+    <div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+    </div>
+    
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+
+    <div>
+      <label for="firstname">First Name:</label>
+      <input type="text" id="firstname" name="firstname" required>
+    </div>
+
+    <div>
+      <label for="middlename">Middle Name:</label>
+      <input type="text" id="middlename" name="middlename">
+    </div>
+    
+    <div>
+      <label for="lastname">Last Name:</label>
+      <input type="text" id="lastname" name="lastname" required>
+    </div>
+    
+    <div>
+      <label for="birthdate">Date of Birth:</label>
+      <input type="date" id="birthdate" name="birthdate" required>
+    </div>
+
+    <div>
+      <label for="roles">Role:</label>
+      <select name="roles" id="roles" class="roles" required>
+        <% roles.forEach( function (role) { %>
+          <option value="<%= role.id %>"  data-role-name="<%= role.role %>"><%= role.role %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div id="optionalFields" class="hidden">
+      <div>
+        <label for="positions" class="position-Label">Position:</label>
+        <select name="positions" class="positions" required>
+          <% positions.forEach( function (position) { %>
+            <option value="<%= position.id %>"><%= position.position %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div>
+        <label for="parties" class="party-Label">Party:</label>
+        <select name="parties" class="parties" required>
+          <% parties.forEach( function (party) { %> 
+            <option value="<%= party.id %>"><%= party.party %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div>
+        <label for="logo">Party Logo:</label>
+        <input type="file" id="logo" name="logo" accept="image/*">
+      </div>
+    </div>
+
+    <div>
+      <label for="photo">Photo:</label>
+      <input type="file" id="photo" name="photo" accept="image/*">
+    </div>
+    
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+  document.getElementById('roles').addEventListener('change', function() {
+  var optionalFields = document.getElementById('optionalFields');
+  var selectedRole = this.options[this.selectedIndex].getAttribute('data-role-name').toLowerCase();
+
+  if (selectedRole === 'candidate') {
+    optionalFields.classList.remove('hidden'); // Show optional fields
+  } else {
+    optionalFields.classList.add('hidden'); // Hide optional fields
+  }
+});
+
+  </script>
+</body>
+</html>
+
+                  

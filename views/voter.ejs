@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voters</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Barlow+Condensed|Barlow:600|Rasa:300,500" rel="stylesheet">
+    <style>
+        /* Main Bar Styling */
+.main-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-color: #f0f4f8;
+}
+
+/* Voter Content */
+.voter-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Header Styling */
+.voter-content h1 {
+    font-size: 2rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Table Container */
+.voter-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Table Styling */
+.voter-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Rows */
+.voter-table tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.3s ease;
+}
+
+.voter-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.voter-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Table Data */
+.voter-table td {
+    /* padding: 1rem; */
+    text-align: left;
+    color: #333;
+    vertical-align: middle;
+}
+
+/* Image Styling */
+.voter-table td img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Action Button Styling */
+.voter-table button {
+    padding: 0.5rem 1rem;
+    background-color: #355E3B; 
+    color: #fff; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1rem; 
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+}
+.voter-table button:hover {
+    background-color: #355E3B; 
+    transform: scale(1.05); 
+}
+.voter-table button:focus {
+    outline: none; 
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
+.voter-table button:disabled {
+    background-color: #ccc; 
+    cursor: not-allowed;
+    transform: none; 
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .voter-content {
+        padding: 1rem;
+    }
+
+    .voter-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .voter-table table {
+        font-size: 0.9rem;
+    }
+
+    .voter-table td {
+        padding: 0.75rem;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-bar">
+            
+        </nav>
+        
+        <aside class="aside-bar">
+            <fieldset class="aside-item item1">
+                <h1><i class="ri-dashboard-line"></i><a href="./dashboard">Dashboard</a></h1>
+            </fieldset>
+            <fieldset class="aside-item item2">
+                <i class="ri-lock-2-fill"></i>
+                <button></i>Voters</button>
+            </fieldset>
+            <fieldset class="aside-item item3">
+                <i class="ri-pie-chart-2-fill"></i>
+                <button><a href=""></i>Parties</a></button>
+            </fieldset>
+            <fieldset class="aside-item item5">
+                <i class="ri-stack-line"></i>
+                <button><a href="">positions</a></button>
+            </fieldset>
+            <fieldset class="aside-item item6">
+                <i class="ri-global-line"></i>
+                <button><a href="./contestants">Contestants</a></button>
+            </fieldset>
+            <fieldset class="aside-item item5">
+                <i class="ri-speak-fill"></i>
+                <button><a href="">Elections</a></button>
+            </fieldset>
+            <fieldset class="aside-item item6">
+                <i class="ri-user-line"></i>
+                <button>Users</button>
+            </fieldset>
+        </aside>
+
+        <main class="main-bar">
+
+           <div class="voter-content">
+            <h5>Total Voters: <%= voters_count %></h5>
+            <h1>Total Voters</h1>
+            <div class="voter-table">
+                <table>
+                    <table>
+                        <% totalvoter.forEach(function(voter) { %>
+                          <tr>
+                            <td>
+                              <img src="data:image/jpeg;base64,<%= voter.photo.toString('base64') %>" alt="Voter Photo">
+                            </td>
+                            <td>
+                              <%= voter.firstname %>
+                            </td>
+                            <td>
+                              <%= voter.middlename %>
+                            </td>
+                            <td>
+                              <%= voter.lastname %>
+                            </td>
+                            <td>
+                              <button onclick="castVote('<%= voter.id %>')">Vote</button>
+                            </td>
+                          </tr>
+                        <% }) %>
+                      </table>
+                      
+                    
+            </div>
+           </div>
+        </main>
+    </div>
+
+    <script src=""></script>
+</body>
+</html>

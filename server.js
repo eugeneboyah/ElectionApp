@@ -2,9 +2,17 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const bodyparser = require("body-parser");
+const multer = require("multer");
 const sqlite3 = require('sqlite3').verbose();
 
+// setup multer
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/css', express.static(path.join(__dirname, 'public/css')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads/')));
 app.use(bodyparser.urlencoded({ extended: true}));
 
 app.set("views", path.join(__dirname, "views"));
@@ -86,45 +94,138 @@ app.post('/login', (req, res) => {
 
 
 app.get('/dashboard', (req, res) => {
-    res.render('dashboard.ejs');
-});
-
-// Route to render voters registration form
-app.get("/voters", (req, res)=>{
-  db.all("SELECT * FROM roles",function(err,row){
-  res.render("voters.ejs",{row})
-
+  db.all( `SELECT COUNT(*) FROM users WHERE role_id = 3`,(err, row)=>{
+    if (err) {
+      throw err;
+    }
+    const voters_count =row[0]["COUNT(*)"];
+    console.log(voters_count);
+    res.render('dashboard.ejs', {voters_count});
   })
 });
-app.post("/voters", (req, res) => {
-  console.log(req.body); // Ensure req.body is populated correctly
-  const { username, password, firstname, middlename, lastname, birthdate, photo } = req.body;
-  db.run(
-      "INSERT INTO users(firstname, middlename, lastname, dob, photo) VALUES(?,?,?,?,?)",
-      [ firstname, middlename, lastname, birthdate, photo ],
-      function(err) {
-          if (err) {
-              return console.error(err.message); // Corrected console.error
-
-          }
-           else{
-            db.run(
-              "INSERT INTO auth(username,password,user_id) VALUES (?,?,?)",
-              [username,password, this.lastID] )
-
-              res.redirect("/login")
-          }
 
 
-          console.log(`A row has been inserted with ID ${this.lastID}`);
-          
-      }
-  );
+app.get("/voter", (req, res) => {
+  db.all(`SELECT * FROM users WHERE role_id = 3`, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    const totalvoter = rows;
+    const voters_count = totalvoter.length; // Calculate the count of voters
+
+    res.render("voter", {
+      totalvoter: totalvoter,
+      voters_count: voters_count, // Pass the voter count
+    });
+  });
 });
 
+app.get("/contestants", (req, res) => {
+  db.all(`SELECT candidates.id AS candidate_id, 
+                 candidates.firstname, 
+                 candidates.middlename, 
+                 candidates.lastname, 
+                 candidates.photo, 
+                 positions.position AS position_id, 
+                 parties.party
+          FROM candidates
+          JOIN positions ON candidates.position_id = positions.id
+          JOIN parties ON candidates.party_id = parties.id`, 
+          (err, rows) => {
+            if (err) {
+              console.error("Error fetching contestants:", err.message);
+              return res.status(500).send("Error fetching contestants.");
+            }
+            console.log("Fetched contestants:", rows); // Add this line
+            const contestants = rows;
+            res.render("contestants", { contestants: contestants });
+          });
+        });
 
+// Route to render registration form
+app.get("/register", (req, res) => {
 
+  let roles, parties, positions;
 
+  db.all("SELECT * FROM roles", (err, rows) => {
+    if (err) {
+      return res.status(500).send("Error fetching roles.");
+    }
+    roles = rows;
+
+    db.all("SELECT * FROM parties", (err, rows) => {
+      if (err) {
+        return res.status(500).send("Error fetching parties.");
+      }
+      parties = rows;
+
+      db.all("SELECT * FROM positions", (err, rows) => {
+        if (err) {
+          return res.status(500).send("Error fetching positions.");
+        }
+        positions = rows;
+
+        res.render("register.ejs", { roles: roles, parties: parties, positions: positions });
+        console.log(roles, parties, positions);
+      });
+    });
+  });
+});
+
+app.post("/register", upload.single("photo"), (req, res) => {
+  console.log(req.file);
+  console.log(req.body);
+
+  const { username, password, firstname, middlename, lastname, birthdate, roles, positions, parties } = req.body;
+  const photo = req.file.buffer;
+
+  if (parseInt(roles) === 2) {  // If the role is for a candidate
+    // Insert into candidates table
+    const candidateStmt = db.prepare(
+      "INSERT INTO candidates(firstname, middlename, lastname, photo, party_id, position_id) VALUES(?,?,?,?,?,?)"
+    );
+    candidateStmt.run(firstname, middlename, lastname, photo, parties, positions, function (err) {
+      if (err) {
+        return console.error("Error inserting candidate:", err.message);
+      }
+      console.log('Candidate registration successful');
+      res.redirect("/login");
+    });
+    candidateStmt.finalize();
+  } else if (parseInt(roles) === 1) {  // If the role is for a regular user
+    // Insert into users table
+    const userStmt = db.prepare(
+      "INSERT INTO users(firstname, middlename, lastname, dob, photo, role_id) VALUES(?,?,?,?,?,?)"
+    );
+    userStmt.run(firstname, middlename, lastname, birthdate, photo, roles, function (err) {
+      if (err) {
+        console.error("Error inserting user:", err.message);
+        return res.status(500).send("Error registering user.");
+      }
+      
+      const userId = this.lastID; // Get the last inserted ID
+      console.log(`User ID: ${userId}`);
+
+      // Insert into auth table
+      const authStmt = db.prepare(
+        "INSERT INTO auth(username, password, user_id) VALUES (?,?,?)"
+      );
+      authStmt.run(username, password, userId, function (err) {
+        if (err) {
+          console.error("Error inserting auth:", err.message);
+          return res.status(500).send("Error saving authentication details.");
+        }
+        console.log('User registration successful');
+        res.redirect("/login");
+      });
+      authStmt.finalize();
+    });
+    userStmt.finalize();
+  } else {
+    // Handle invalid roles
+    res.status(400).send("Invalid role specified.");
+  }
+});
 app.listen(3002, () => {
-    console.log(`Server is listening on port http://localhost:3002`);
+  console.log(`Server is listening on http://localhost:3002`);
 });

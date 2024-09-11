@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Barlow+Condensed|Barlow:600|Rasa:300,500" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-bar">
+            
+        </nav>
+        
+        <aside class="aside-bar">
+            <fieldset class="aside-item item1">
+                <h1><i class="ri-dashboard-line"></i>Dashboard</h1>
+            </fieldset>
+            <fieldset class="aside-item item2">
+                <i class="ri-lock-2-fill"></i>
+                <button><a href="./voter">Voters</a></i></button>
+            </fieldset>
+            <fieldset class="aside-item item3">
+                <i class="ri-pie-chart-2-fill"></i>
+                <button><a href=""></i>Parties</a></button>
+            </fieldset>
+            <fieldset class="aside-item item5">
+                <i class="ri-stack-line"></i>
+                <button><a href="">positions</a></button>
+            </fieldset>
+            <fieldset class="aside-item item6">
+                <i class="ri-global-line"></i>
+                <button><a href="./contestants">Contestants</a></button>
+            </fieldset>
+            <fieldset class="aside-item item5">
+                <i class="ri-speak-fill"></i>
+                <button><a href="">Elections</a></button>
+            </fieldset>
+            <fieldset class="aside-item item6">
+                <i class="ri-user-line"></i>
+                <button>Users</button>
+            </fieldset>
+        </aside>
+
+        <main class="main-bar">
+            <div class="main-container">
+                <div class="header">
+                    <h1>Result Dashboard</h1>
+                </div>
+                <div class="voters">
+                    <div class="voters-icon"><i class="ri-pencil-fill"></i></div>
+                    <div class="voters-text">
+                        <h3>Registered Voters</h3>
+                        <p>Total number of Registered voters</p>
+                    </div>
+                    <div class="voters-number"><%= voters_count %></div>
+
+                </div>
+                <div class="total-votes">
+                    <div class="votes-icon"><i class="ri-team-fill"></i></div>
+                    <div class="votes-text">
+                        <h3>Total Voters</h3>
+                        <p>Total number of votes</p>
+                    </div>
+                    <div class="voters-number">0</div>
+
+                </div> 
+                <div class="second-header">Chairman</div>
+                <div class="votes vote1">
+                    <i class="ri-account-circle-fill"></i>
+                    <div class="user-number"> 
+                        <h2>278</h2> 
+                        <p>Votes</p> 
+                    </div>
+                </div>
+                <div class="votes vote2">
+                    <i class="ri-account-circle-fill"></i>
+                    <div class="user-number"> 
+                        <h2>156</h2> 
+                        <p>Votes</p> 
+                    </div>
+                </div>
+                <div class="votes vote3">
+                    <i class="ri-account-circle-fill"></i>
+                    <div class="user-number"> 
+                        <h2>164</h2> 
+                        <p>Votes</p> 
+                    </div>
+                </div>
+                <div class="votes vote4"> <i class="ri-account-circle-fill"></i>
+                    <div class="user-number"> 
+                        <h2>423</h2> 
+                        <p>Votes</p> 
+                    </div></div>
+            </div>
+        </main>
+    </div>
+
+    <script src=""></script>
+</body>
+</html>
